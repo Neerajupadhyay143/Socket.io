@@ -5,7 +5,7 @@ const io = new Server(9000, {
         origin: 'https://localhost:3000'
     }
 })
-
+console.log("hi")
 let users = [];
 
 
