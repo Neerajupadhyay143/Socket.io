@@ -2,10 +2,13 @@ import { Server } from "socket.io";
 
 const io = new Server(9000, {
     cors: {
-        origin: 'https://localhost:3000'
+        origin: 'https://whats-app-clone-2-tawny.vercel.app', // Allow the Vercel deployed app
+        methods: ["GET", "POST"], // Specify allowed methods if needed
+        credentials: true // Allow credentials if needed
     }
-})
-console.log("hi")
+});
+
+console.log("Socket server running on port 9000");
 let users = [];
 
 
