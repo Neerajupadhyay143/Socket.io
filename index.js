@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 
 const io = new Server(9000, {
     cors: {
-        origin: ['http://localhost:3000, https://whats-app-clone-2-tawny.vercel.app/'],     // Allow the Vercel deployed app
+        origin: ['http://localhost:3000'],     // Allow the Vercel deployed app
         methods: ["GET", "POST"], // Specify allowed methods if needed
         credentials: true // Allow credentials if needed
     }
@@ -12,7 +12,7 @@ console.log("Socket server running on port 9000");
 let users = [];
 
 
-const adduser = (userData, socketId) => {
+const addUser = (userData, socketId) => {
     !users.some(user => user.sub === userData.sub) && users.push({ ...userData, socketId })
 }
 
@@ -21,14 +21,14 @@ const removeUsers = (socketId) => {
 };
 
 const getUser = (userId) => {
-    return users.find(user => user.sub === userId)
+    return users.find(user => user?.sub === userId)
 }
 io.on("connection", (socket) => {
-    console.log('user connected !')
+    console.log('user connected !', socket.id)
 
-    socket.on('addusers', userData => {
-        adduser(userData, socket.id)
 
+    socket.on('addUsers', userData => {
+        addUser(userData, socket.id)
         io.emit('getusers', users);
 
 
@@ -45,7 +45,21 @@ io.on("connection", (socket) => {
     });
 
     socket.on('sendMessage', data => {
-        const user = getUser(data.reciverId)
-        io.to(user.socketId).emit('getMessage', data)
+        const user = getUser(data.reciverID)
+        console.log(data.reciverId)
+        if (user && user.socketId) {
+            console.log(`Sending message from ${data.senderID} to ${data.reciverID} at socket ${user.socketId}`);
+            io.to(user.socketId).emit('getMessage', data);
+        } else {
+            console.log(`User not found or no socket ID: ${data.reciverID}`);
+        }
     })
-})          
+
+    // socket.on('sendMessage', data => {
+    //     const user = getUser(data.receiverID);
+    //     io.to(user.socketId).emit('getMessage', data);
+    // })
+
+
+})
+
