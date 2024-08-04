@@ -55,10 +55,20 @@ io.on("connection", (socket) => {
         }
     })
 
-    // socket.on('sendMessage', data => {
-    //     const user = getUser(data.receiverID);
-    //     io.to(user.socketId).emit('getMessage', data);
-    // })
+    socket.on('typing', (data) => {
+        const receiver = getUser(data.receiverID);
+        if (receiver && receiver.socketId) {
+            io.to(receiver.socketId).emit('typing', { senderId: data.senderId });
+        }
+    });
+
+    socket.on('stopTyping', (data) => {
+        const receiver = getUser(data.receiverID);
+        if (receiver && receiver.socketId) {
+            io.to(receiver.socketId).emit('stopTyping', { senderId: data.senderId });
+        }
+    });
+
 
 
 })
