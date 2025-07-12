@@ -1,8 +1,10 @@
 import { Server } from "socket.io";
 
-const io = new Server(9000, {
+const PORT = process.env.PORT;
+const URL = process.env.CORS_ORIGIN;
+const io = new Server(PORT, {
     cors: {
-        origin: ['https://whats-app-clone-2-smoky.vercel.app/'],     // Allow the Vercel deployed app
+        origin: [URL],     // Allow the Vercel deployed app
         methods: ["GET", "POST"], // Specify allowed methods if needed
         credentials: true // Allow credentials if needed
     }
